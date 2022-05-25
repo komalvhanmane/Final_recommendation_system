@@ -1,4 +1,3 @@
-from math import ceil
 import requests
 
 import pandas as pd
@@ -9,12 +8,13 @@ from django.contrib.auth import logout, authenticate, login
 from django.contrib import messages
 from django.shortcuts import render
 
+from datetime import datetime
 # Create your views here.
 # pipeline
 from .forms import SignUpForm, LoginForm
-# from .models import Movie, History
+from .models import History
 from .models import Movie
-
+now = datetime.now()
 new_dataframe = pd.read_csv(
     "C:\\Users\\admin\\PycharmProjects\\pythonProject\\RecommenderSystem\\recommender\\movies11 (1).csv")
 
@@ -134,7 +134,7 @@ def generateRecommendation(request, movie1, new_dataframe):
     else:
         movieindex = new_dataframe[new_dataframe['title'] == movie1].index[0]
         distances = similarity_matrix[movieindex]
-        movie_list = sorted(list(enumerate(distances)), reverse=True, key=lambda x: x[1])[0:10]
+        movie_list = sorted(list(enumerate(distances)), reverse=True, key=lambda x: x[1])[0:6]
         for i in movie_list:
             movie_list1.append({"title": new_dataframe.iloc[i[0]].title, "id": new_dataframe.iloc[i[0]].movie_id})
 
@@ -143,42 +143,48 @@ def generateRecommendation(request, movie1, new_dataframe):
 
 
 def signup(request):
-    if not request.user.is_authenticated:
-        if request.method == 'POST':
-            fm = SignUpForm(request.POST)
-            if fm.is_valid():
-                user = fm.save()
-                messages.success(request, 'Account Created Successfully')
-                return HttpResponseRedirect('/login/')
+    try:
+        if not request.user.is_authenticated:
+            if request.method == 'POST':
+                fm = SignUpForm(request.POST)
+                if fm.is_valid():
+                    user = fm.save()
+                    messages.success(request, 'Account Created Successfully')
+                    return HttpResponseRedirect('/login/')
+            else:
+                if not request.user.is_authenticated:
+                    fm = SignUpForm()
+            return render(request, 'recommenderapp/signup.html', {'form': fm})
         else:
-            if not request.user.is_authenticated:
-                fm = SignUpForm()
-        return render(request, 'recommenderapp/signup.html', {'form': fm})
-    else:
-        return HttpResponseRedirect('/login/')
+            return HttpResponseRedirect('/login/')
+    except Exception:
+        print("exception signup")
 
 
 def user_login(request):
-    if not request.user.is_authenticated:
-        if request.method == 'POST':
-            fm = LoginForm(request=request, data=request.POST)
-            if fm.is_valid():
-                uname = fm.cleaned_data['username']
-                upass = fm.cleaned_data['password']
-                user = authenticate(username=uname, password=upass)
-                if user is not None:
-                    login(request, user)
-                    messages.success(request, 'Logged in Successfully!!')
-                    return HttpResponseRedirect('/dashboard/')
+    try:
+        if not request.user.is_authenticated:
+            if request.method == 'POST':
+                fm = LoginForm(request=request, data=request.POST)
+                if fm.is_valid():
+                    uname = fm.cleaned_data['username']
+                    upass = fm.cleaned_data['password']
+                    user = authenticate(username=uname, password=upass)
+                    if user is not None:
+                        login(request, user)
+                        messages.success(request, 'Logged in Successfully!!')
+                        return HttpResponseRedirect('/dashboard/')
+            else:
+                fm = LoginForm()
+            return render(request, 'recommenderapp/login.html', {'form': fm})
         else:
-            fm = LoginForm()
-        return render(request, 'recommenderapp/login.html', {'form': fm})
-    else:
-        return HttpResponseRedirect('/dashboard/')
+            return HttpResponseRedirect('/dashboard/')
+    except Exception:
+        print("exception login")
 
 
 def dashboard(request):
-    # new_dataframe = pd.read_csv(
+    # new_dataframe1 = pd.read_csv(
     #     "C:\\Users\\admin\\PycharmProjects\\pythonProject\\RecommenderSystem\\recommender\\movies11 (1).csv")
     param = []
     newParam = []
@@ -189,8 +195,8 @@ def dashboard(request):
         # print('hello')
         searchmovie = request.POST.get("searchmovie")
         # print("-----------------------------------------------------HELOO---------------------------")
-        # hist = History(name=searchmovie)
-        # hist.save()
+        hist = History(name=searchmovie,user=request.user)
+        hist.save()
         # print('welcome')
         param = generateRecommendation(request, searchmovie, new_dataframe)
         # image = []
@@ -202,8 +208,7 @@ def dashboard(request):
             newParam.append(temp)
             # fetch_image_url(x.get("id"))
     movies = []
-    # popularMovie = Movie.objects.all()
-    # new_dataframe = pd.read_csv(
+    # new_dataframe1 = pd.read_csv(
     #     "C:\\Users\\admin\\PycharmProjects\\pythonProject\\RecommenderSystem\\recommender\\movies11 (1).csv")
 
     for i in range(len(new_dataframe)):
@@ -229,3 +234,15 @@ def profile(request):
     if request.user.is_authenticated:
         user = request.user.id
     return render(request, 'recommenderapp/profile.html')
+
+
+def history(request):
+    history1 = History.objects.all()
+    history2 = []
+    for i in history1:
+        if i.user == request.user:
+            history2.append(i)
+    idx = pd.Index(history2)
+    print(idx.value_counts())
+    param = {"history": history2}
+    return render(request, 'recommenderapp/history.html', param)
