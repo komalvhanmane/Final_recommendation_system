@@ -1,7 +1,7 @@
 import requests
 
 import pandas as pd
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from django.contrib.auth import logout, authenticate, login
@@ -9,22 +9,22 @@ from django.contrib import messages
 from django.shortcuts import render
 
 from datetime import datetime
-# Create your views here.
-# pipeline
 from .forms import SignUpForm, LoginForm
 from .models import History
-from .models import Movie
+
 now = datetime.now()
-new_dataframe = pd.read_csv(
-    "C:\\Users\\admin\\PycharmProjects\\pythonProject\\RecommenderSystem\\recommender\\movies11 (1).csv")
+new_dataframe = {}
+df = {}
+newParam = []
+similarity_matrix = [[]]
 
 
 def get_my_key(obj):
     return float(obj.popularity)
 
 
-def fetch_image_url(id):
-    url = f"https://api.themoviedb.org/3/movie/{id}?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US"
+def fetch_image_url(Mid):
+    url = f"https://api.themoviedb.org/3/movie/{Mid}?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US"
 
     payload = {}
     headers = {}
@@ -34,12 +34,11 @@ def fetch_image_url(id):
     return response.json().get("poster_path")
 
 
-def index(request):
-    # param = []
-    # if request.method == 'POST':
-    #     searchmovie = request.POST.get("searchmovie")
-    #     print("-----------------------------------------------------HELOO---------------------------")
-    #     param = generateRecommendation(request, searchmovie)
+def trainData(request):
+    global new_dataframe
+    new_dataframe = pd.read_csv(
+        "C:\\Users\\admin\\PycharmProjects\\pythonProject\\RecommenderSystem\\recommender\\movies11 (1).csv")
+    global df
     df = new_dataframe
     # print(df)
     df1 = df.sort_values(by=['popularity'])
@@ -52,6 +51,43 @@ def index(request):
     for i in range(0, 7):
         poster_path.append(fetch_image_url(images[i]))
         print(fetch_image_url(images[i]))
+    global newParam
+    for i in range(len(poster_path)):
+        temp = {}
+        temp["title"] = movies[i]
+        temp["image"] = poster_path[i]
+        newParam.append(temp)
+    cv = CountVectorizer(max_features=6000, stop_words='english')
+    vectors = cv.fit_transform(new_dataframe['tags']).toarray()
+    global similarity_matrix
+    similarity_matrix = cosine_similarity(vectors)
+    return HttpResponseRedirect("/home/")
+
+
+def showPage(request):
+    if request.method == "POST":
+        return HttpResponseRedirect("/trainModel/")
+    return render(request, "recommenderapp/home.html")
+
+
+def index(request):
+    # param = []
+    # if request.method == 'POST':
+    #     searchmovie = request.POST.get("searchmovie")
+    #     print("-----------------------------------------------------HELOO---------------------------")
+    #     param = generateRecommendation(request, searchmovie)
+    # df = new_dataframe
+    # print(df)
+    # df1 = df.sort_values(by=['popularity'])
+    # print(df1['popularity'], df1['title'])
+    # movies = df1.to_dict()
+    # print(movies)
+    # movies = df1['title'].tolist()
+    # images = df1['movie_id'].tolist()
+    # poster_path = []
+    # for i in range(0, 7):
+    #     poster_path.append(fetch_image_url(images[i]))
+    #     print(fetch_image_url(images[i]))
     # dict1 = {"movies": movies, "images": images}
     # for i in range(len(df1)):
     # movies.append(new_dataframe["title"])
@@ -62,7 +98,6 @@ def index(request):
     # temp["title"] = new_dataframe["title"]
     # temp["popularity"] = new_dataframe["popularity"]
     # movies.append(temp)
-
     # popularMovie = Movie.objects.all()
     # for i in range(len(popularMovie)):
     #     movies.append(popularMovie[i])
@@ -73,19 +108,13 @@ def index(request):
     # params1 = {"movie": params, "recommended": param}
     # params1 = {"dict1": dict1}
     # params1 = {"movie": movies, 'image': poster_path}
-    newParam = []
-    for i in range(len(poster_path)):
-        temp = {}
-        temp["title"] = movies[i]
-        temp["image"] = poster_path[i]
-        newParam.append(temp)
     params1 = {"popular": newParam}
     # params2 = {"movies": params1}
     # print(params1.get("movie")[0]["movie"][1].movie_id)
     return render(request, 'recommenderapp/index.html', params1)
 
 
-def generateRecommendation(request, movie1, new_dataframe):
+def generateRecommendation(request, movie1):
     # movies_id = []
     # title = []
     # movie_tags = []
@@ -121,11 +150,15 @@ def generateRecommendation(request, movie1, new_dataframe):
 
     # print(new_dataframe)
 
-    cv = CountVectorizer(max_features=6000, stop_words='english')
-    vectors = cv.fit_transform(new_dataframe['tags']).toarray()
-
-    similarity_matrix = cosine_similarity(vectors)
+    # cv = CountVectorizer(max_features=6000, stop_words='english')
+    # vectors = cv.fit_transform(new_dataframe['tags']).toarray()
+    #
+    # similarity_matrix = cosine_similarity(vectors)
     # print(similarity_matrix)
+    # global new_dataframe
+    # new_dataframe = pd.read_csv(
+    #     "C:\\Users\\admin\\PycharmProjects\\pythonProject\\RecommenderSystem\\recommender\\movies11 (1).csv")
+    global new_dataframe
     movieindex1 = new_dataframe[new_dataframe['title'] == movie1]
     print(movieindex1)
     movie_list1 = []
@@ -133,11 +166,11 @@ def generateRecommendation(request, movie1, new_dataframe):
         print("not found")
     else:
         movieindex = new_dataframe[new_dataframe['title'] == movie1].index[0]
+        print(movieindex)
         distances = similarity_matrix[movieindex]
         movie_list = sorted(list(enumerate(distances)), reverse=True, key=lambda x: x[1])[0:6]
         for i in movie_list:
             movie_list1.append({"title": new_dataframe.iloc[i[0]].title, "id": new_dataframe.iloc[i[0]].movie_id})
-
     # print("----------------------------minindex-----------------", movieindex)
     return movie_list1
 
@@ -186,7 +219,7 @@ def user_login(request):
 def dashboard(request):
     # new_dataframe1 = pd.read_csv(
     #     "C:\\Users\\admin\\PycharmProjects\\pythonProject\\RecommenderSystem\\recommender\\movies11 (1).csv")
-    param = []
+    # param = []
     newParam = []
     # print('hi..')
     if request.method == 'POST':
@@ -195,10 +228,10 @@ def dashboard(request):
         # print('hello')
         searchmovie = request.POST.get("searchmovie")
         # print("-----------------------------------------------------HELOO---------------------------")
-        hist = History(name=searchmovie,user=request.user)
+        hist = History(name=searchmovie, user=request.user)
         hist.save()
         # print('welcome')
-        param = generateRecommendation(request, searchmovie, new_dataframe)
+        param = generateRecommendation(request, searchmovie)
         # image = []
         for x in param:
             temp = {}
@@ -210,7 +243,7 @@ def dashboard(request):
     movies = []
     # new_dataframe1 = pd.read_csv(
     #     "C:\\Users\\admin\\PycharmProjects\\pythonProject\\RecommenderSystem\\recommender\\movies11 (1).csv")
-
+    global new_dataframe
     for i in range(len(new_dataframe)):
         # movies.append(new_dataframe["title"])
         movies.append(new_dataframe["title"][i])
@@ -242,7 +275,7 @@ def history(request):
     for i in history1:
         if i.user == request.user:
             history2.append(i)
-    idx = pd.Index(history2)
-    print(idx.value_counts())
+    # idx = pd.Index(history2)
+    # print(idx.value_counts())
     param = {"history": history2}
     return render(request, 'recommenderapp/history.html', param)
