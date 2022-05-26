@@ -5,76 +5,23 @@
                 background: -webkit-linear-gradient(left, #3931af, #00c6ff);
                 font-family:Times new Roman;
            }
-          .col-md-3
-          {
-          display: inline-block;
-          margin-left:-4px;
-          }
-
-          .carousel-indicators .active {
-          background-color: blue;
-          }
-
-          .col-md-3 img{
-          width: 170px;
-          height: 200px;
-          }
-
-          body .carousel-indicator li{
-          background-color: blue;
-          }
-
-          body .carousel-indicators{
-          bottom: 0;
-          }
-
-          body .carousel-control-prev-icon,
-          body .carousel-control-next-icon{
-          background-color: blue;
-          }
-
-          .carousel-control-prev,
-          .carousel-control-next{
-          top: auto;
-          bottom: auto;
-          padding-top: 222px;
-          }
-        body .no-padding{
-           padding-left: 0,
-           padding-right: 0;
-           }
-
-        .wrapper{
-
-        margin-bottom:200px;
-        }
-
  {% endblock %}
-
 {% block content %}
 <br><br>
-
-
-    <!--Slideshow starts here -->
-
-
 <section class="container" >
 	<div class="container px-4">
 		<div class="row gx-5">
 			<div class="col">
 				<div class="p-3 border bg-light">
 				 {% if popular %}
-                    {{hello}}
                         <center> <h3> Popular Movies </h3></center>
 						<div class="row row-cols-2 row-cols-lg-3 g-2 g-lg">
-
 						{% for i in popular|slice:"0:6"%}
-<!--                            {{i.movies.i}}-->
 									<div class="col">
 										<div class="p-3 border bg-light">
 											<div class="card" style="width: 18rem;">
-<img class="card-img-top" src="https://image.tmdb.org/t/p/w500/{{i.image}}"  alt="Card image cap" height="300px" width="200px">												<div class="card-body">
-
+<img class="card-img-top" src="https://image.tmdb.org/t/p/w500/{{i.image}}"  alt="Card image cap" height="300px" width="200px">
+                                                <div class="card-body">
 													<h5 class="card-title"> Movie Name :: {{i.title}}</h5>
 												</div>
 											</div>
@@ -82,13 +29,10 @@
 									</div>
 							{% endfor %}
 						</div>
-
                     {% endif %}
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	</section>
-
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
  {% endblock content %}

@@ -5,75 +5,32 @@
                 background: -webkit-linear-gradient(left, #3931af, #00c6ff);
                 font-family: Times New Roman;
          }
-          .col-md-3
-          {
-          display: inline-block;
-          margin-left:-4px;
-          }
-
-          .carousel-indicators .active {
-          background-color: blue;
-            }
-
-          .col-md-3 img{
-
-          width: 170px;
-          height: 200px;
-          }
-
-          body .carousel-indicator li{
-          background-color: blue;
-          }
-
-          body .carousel-indicators{
-          bottom: 0;
-          }
-
-          body .carousel-control-prev-icon,
-          body .carousel-control-next-icon{
-          background-color: blue;
-          }
-
-          .carousel-control-prev,
-          .carousel-control-next{
-          top: auto;
-          bottom: auto;
-          padding-top: 222px;
-          }
-        body .no-padding{
+         body .no-padding{
            padding-left: 0,
            padding-right: 0;
            }
-
-        .wrapper{
-
-        margin-bottom:200px;
-        }
-
-h3{
-
-font-family:Times new roman;
-}
-
- {% endblock %}
-
+         .wrapper{
+           margin-bottom:200px;
+         }
+         h3{
+           font-family:Times new roman;
+         }
+{% endblock %}
 {% block content %}
-
 <br>
 <br>
 <center><div>
     <form autocomplete="off" method="post"> {%csrf_token%}
-											<div class="autocomplete" style="width: 300px;">
-												<table>
-													<tr>
-														<td><input id="myInput" type="text"
-															placeholder="Search Movie" name="searchmovie" required></td>
-														<td><input type="submit" value="search"></td>
-													</tr>
-												</table>
-											</div>
-											<input name="email2" value="<%=email%>" type="hidden">
-										</form>
+        <div class="autocomplete" style="width: 300px;">
+            <table>
+                <tr>
+                    <td><input id="myInput" type="text"
+                               placeholder="Search Movie" name="searchmovie" required></td>
+                    <td><input type="submit" value="search"></td>
+                </tr>
+            </table>
+        </div>
+    </form>
 </div></center>
 
 <br><br>
@@ -83,47 +40,45 @@ font-family:Times new roman;
 		<div class="row gx-5">
 			<div class="col">
 				<div class="p-3 border bg-light">
-
 				<h3> Searched Movie </h3>
 					<div class="container">
+                        <center>
                         <div class="col">
-										<div class="p-3 border bg-light">
-											<div class="card" style="width: 18rem;">
-<img class="card-img-top" src="https://image.tmdb.org/t/p/w500/{{recommended.0.image}}"  alt="Card image cap" height="300px" width="200px">												<div class="card-body">
-
-													<h5 class="card-title"> Movie Name :: {{recommended.0.title}}</h5>
-												</div>
-											</div>
-										</div>
-									</div>
-
+                            <div class="p-3 border bg-light">
+                                <div class="card" style="width: 18rem;">
+<!--                                    using api of tmd and fetching movie posters-->
+<img class="card-img-top" src="https://image.tmdb.org/t/p/w500/{{recommended.0.image}}" alt="Card image cap" height="300px" width="200px">
+                                    <div class="card-body">
+                                        <h5 class="card-title"> Movie Name :: {{recommended.0.title}}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                            </center>
                         <center> <h3> Recommended Movies </h3></center>
 						<div class="row row-cols-2 row-cols-lg-3 g-2 g-lg">
-
 						{% for i in recommended|slice:"1:" %}
-
-									<div class="col">
-										<div class="p-3 border bg-light">
-											<div class="card" style="width: 18rem;">
-<img class="card-img-top" src="https://image.tmdb.org/t/p/w500/{{i.image}}"  alt="Card image cap" height="300px" width="200px">												<div class="card-body">
-
-													<h5 class="card-title"> Movie Name :: {{i.title}}</h5>
-												</div>
-											</div>
-										</div>
-									</div>
-							{% endfor %}
+                            <div class="col">
+                                <div class="p-3 border bg-light">
+                                    <div class="card" style="width: 18rem;">
+<img class="card-img-top" src="https://image.tmdb.org/t/p/w500/{{i.image}}"  alt="Card image cap" height="300px" width="200px">
+                                        <div class="card-body">
+                                            <h5 class="card-title"> Movie Name :: {{i.title}}</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	</section>
+</section>
 {% endif %}
 <script>
-
-
+//javascript
   function autocomplete(inp, arr) {
 
 	var currentFocus;
@@ -219,14 +174,17 @@ font-family:Times new roman;
 		closeAllLists(e.target);
 	});
 }
-
 var movies = [];
+
+<!--all movies which are in dataset will be fetched here and recommended in search bar-->
+
 {% if movie %}
 console.log("hello")
 {% for i in movie %}
 movies.push("{{i}}");
 {% endfor %}
 {% endif %}
+
 console.log(movies);
 autocomplete(document.getElementById("myInput"), movies);
 </script>

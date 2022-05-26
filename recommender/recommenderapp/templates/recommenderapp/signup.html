@@ -7,27 +7,24 @@ body{
 .wrapper{
         margin-bottom:200px;
 }
-
 {% endblock css %}
 {% block content %}
 <center>
 <div class="container p-5 mb-5 wrapper">
-
-<form action="" method="post">
-{% csrf_token %}
-{% for fm in form %}
-<span class="text-light">{{fm.label_tag}}</span>
-<div class="form-group">
-{{fm}}
+    <form action="" method="post">{% csrf_token %}
+        {% for fm in form %}
+            <span class="text-light">{{fm.label_tag}}</span>
+                <div class="form-group">
+                {{fm}}
+                </div>
+                {% if fm.errors %}
+            <div class="alert alert-danger lert-dismissible fade show">
+                {{fm.errors|striptags}}
+            </div>
+                {% endif %}
+        {% endfor %}<br/>
+        <input type="submit" value="submit" class="btn btn-primary">
+    </form>
 </div>
-{% if fm.errors %}
-<div class="alert alert-danger lert-dismissible fade show">
-{{fm.errors|striptags}}
-</div>
-{% endif %}
-{% endfor %}<br/>
-  <input type="submit" value="submit" class="btn btn-primary">
-</form>
-</div>
-    </center>
+</center>
 {% endblock content %}

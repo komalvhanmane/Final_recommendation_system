@@ -13,26 +13,23 @@ width : 50px;
 <br>
 <center>
 <div class="container p-5 mb-5">
-<form method="post">
-{% csrf_token %}
-{% if form.non_field_errors %}
-{% for error in form.non_field_errors %}
-<div class="alert alert-danger">{{error}}</div>
-{% endfor %}
-{% endif %} <br>
-{% for fm in  form %}
-<span class="text-light">{{fm.label_tag}}</span>
-<p>
-{{fm}}
-</p>
-{% if fm.errors  %}
-<div class="alert alert-danger">
-{{fm.errors|striptags}}
+    <form method="post">{% csrf_token %}
+        {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+                <div class="alert alert-danger">{{error}}</div>
+            {% endfor %}
+        {% endif %} <br>
+        {% for fm in  form %}
+            <span class="text-light">{{fm.label_tag}}</span>
+            <p>{{fm}}</p>
+        {% if fm.errors  %}
+            <div class="alert alert-danger">
+            {{fm.errors|striptags}}
+            </div>
+        {% endif %}
+        {% endfor %} <br>
+        <input type="submit" value="Login" class="btn btn-primary"><br>
+    </form>
 </div>
-{% endif %}
-{% endfor %} <br>
-<input type="submit" value="Login" class="btn btn-primary"><br>
-</form>
-</div>
-    </center>
+</center>
 {% endblock content %}

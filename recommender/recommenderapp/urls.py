@@ -11,5 +11,4 @@ urlpatterns = [
     path('history/', views.history,name='history'),
     path('trainModel/',views.trainData,name='trainModel'),
     path('',views.showPage,name="home")
-    # path('movies/',views.filterMovieByGenre,name="movies")
 ]
