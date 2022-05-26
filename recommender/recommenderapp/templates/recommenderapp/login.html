@@ -9,6 +9,9 @@ width : 50px;
 }
 {% endblock css %}
 {% block content %}
+<br>
+<br>
+<center>
 <div class="container p-5 mb-5">
 <form method="post">
 {% csrf_token %}
@@ -31,4 +34,5 @@ width : 50px;
 <input type="submit" value="Login" class="btn btn-primary"><br>
 </form>
 </div>
+    </center>
 {% endblock content %}

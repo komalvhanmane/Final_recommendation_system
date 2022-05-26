@@ -17,6 +17,8 @@ new_dataframe = {}
 df = {}
 newParam = []
 similarity_matrix = [[]]
+movies = []
+images = []
 
 
 def get_my_key(obj):
@@ -45,7 +47,9 @@ def trainData(request):
     # print(df1['popularity'], df1['title'])
     # movies = df1.to_dict()
     # print(movies)
+    global movies
     movies = df1['title'].tolist()
+    global images
     images = df1['movie_id'].tolist()
     poster_path = []
     for i in range(0, 7):
@@ -279,3 +283,30 @@ def history(request):
     # print(idx.value_counts())
     param = {"history": history2}
     return render(request, 'recommenderapp/history.html', param)
+
+
+# def filterMovieByGenre(request):
+#     genreMovie = []
+#     if request.method == "POST":
+#         genre = request.POST.get("genre")
+#         print(genre)
+#         i = 0
+#         global new_dataframe
+#         for j in range(len(movies)):
+#             if i == 6:
+#                 break
+#             # print(new_dataframe["title"][j])
+#             print(movies[j]," ",new_dataframe["title"])
+#             if genre in new_dataframe["genres"]:
+#                 print(genre)
+#                 print(new_dataframe["genres"])
+#                 print("hello")
+#                 temp = {}
+#                 temp["image"] = fetch_image_url(new_dataframe["movie_id"][j])
+#                 temp["title"] = movies[j]
+#                 temp["genres"] = genre
+#                 genreMovie.append(temp)
+#                 i = i + 1
+#     print(genreMovie)
+#     param2 = {"filteredMovie": genreMovie}
+#     return render(request, "recommenderapp/Movies.html", param2)
