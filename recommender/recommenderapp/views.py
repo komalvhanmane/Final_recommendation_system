@@ -26,13 +26,14 @@ images = []
 
 
 def fetch_image_url(Mid):
+    print("hello5")
     url = f"https://api.themoviedb.org/3/movie/{Mid}?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US"
 
     payload = {}
     headers = {}
-
+    print("hello7")
     response = requests.request("GET", url, headers=headers, data=payload)
-
+    print("hello6")
     return response.json().get("poster_path")
 
 
@@ -40,24 +41,29 @@ def fetch_image_url(Mid):
 
 
 def trainData(request):
+    print("hello")
     global new_dataframe
     new_dataframe = pd.read_csv(
         "C:\\Users\\admin\\PycharmProjects\\pythonProject\\RecommenderSystem\\recommender\\movies11 (1).csv")
-
+    print("hello1")
     # retrieving popular movies
     global df
     df = new_dataframe
+    print("hello2")
     df1 = df.sort_values(by=['popularity'])
     # sorting based on popularity
     global movies
+    print("hello3")
     movies = df1['title'].tolist()
     global images
     images = df1['movie_id'].tolist()
     # collecting posters of movies
+    print("Hello4")
     poster_path = []
-    for i in range(0, 7):
+    for i in range(0, 6):
         poster_path.append(fetch_image_url(images[i]))
-        print(fetch_image_url(images[i]))
+        print("image")
+        # print(fetch_image_url(images[i]))
 
     global newParam
     for i in range(len(poster_path)):
@@ -74,10 +80,10 @@ def trainData(request):
     return HttpResponseRedirect("/home/")
 
 
-def showPage(request):
-    if request.method == "POST":
-        return HttpResponseRedirect("/trainModel/")
-    return render(request, "recommenderapp/home.html")
+# def showPage(request):
+#     if request.method == "POST":
+#         return HttpResponseRedirect("/trainModel/")
+#     return render(request, "recommenderapp/home.html")
 
 
 # home page
