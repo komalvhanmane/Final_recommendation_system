@@ -28,7 +28,6 @@ images = []
 def fetch_image_url(Mid):
     print("hello5")
     url = f"https://api.themoviedb.org/3/movie/{Mid}?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US"
-
     payload = {}
     headers = {}
     print("hello7")

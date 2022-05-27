@@ -12,12 +12,14 @@
 <br><br>
 <section class="container" >
 	<div class="container px-4">
+
 		<div class="row gx-5">
 			<div class="col">
+
 				<div class="p-3 border bg-light">
-				 {% if history %}
-                    {{hello}}
+                    {% if history %}
                         <center> <h3> History </h3></center>
+
 						<div class="row row-cols-2 row-cols-lg-3 g-2 g-lg">
 						{% for i in history %}
 									<div class="col">
@@ -27,8 +29,11 @@
                                             </div>
                                         </div>
                                     </div>
-							{% endfor %}
+                            {% endfor %}
                         </div>
+                    {% endif %}
+                    {% if history|length <= 0 %}
+                    <center> <h3> Nothing to Show </h3></center>
                     {% endif %}
                 </div>
             </div>
