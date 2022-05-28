@@ -2,37 +2,42 @@
 {% block title %}Home{% endblock title %}
 {% block css %}
            body{
-                background: -webkit-linear-gradient(left, #3931af, #00c6ff);
-                font-family:Times new Roman;
+                background: -webkit-linear-gradient(left, #8d021f, #00c6ff);
+
            }
  {% endblock %}
 {% block content %}
 <br><br>
 <section class="container" >
 	<div class="container px-4">
-		<div class="row gx-5">
-			<div class="col">
-				<div class="p-3 border bg-light">
+<!--		<div class="row gx-5">-->
+<!--			<div class="col">-->
+<!--				<div class="p-3 border bg-light">-->
 				 {% if popular %}
                         <center> <h3> Popular Movies </h3></center>
-						<div class="row row-cols-2 row-cols-lg-3 g-2 g-lg">
+						<div class="row row-cols-1 row-cols-lg-3 g-2 g-lg">
 						{% for i in popular|slice:"0:6"%}
-									<div class="col">
-										<div class="p-3 border bg-light">
-											<div class="card" style="width: 18rem;">
-<img class="card-img-top" src="https://image.tmdb.org/t/p/w500/{{i.image}}"  alt="Card image cap" height="300px" width="200px">
-                                                <div class="card-body">
-													<h5 class="card-title"> Movie Name :: {{i.title}}</h5>
-												</div>
-											</div>
-										</div>
-									</div>
+									<form method="post"> {% csrf_token %}
+<!--                            <div class="col">-->
+<!--                                <div class="p-3 border bg-light">-->
+                                    <div class="card rounded" style="width: 18rem;">
+                                        <input type="image" src="https://image.tmdb.org/t/p/w500/{{i.image}}" alt="{{ i.title }}" width="40" height="400" class="card-img-top">
+<!--<img class="card-img-top" src="https://image.tmdb.org/t/p/w500/{{i.image}}"  alt="Card image cap" height="500px" width="50px">-->
+                                        <div class="card-body">
+<!--                                            <input type="submit" value="{{i.title}}" width=48 name="searchmovie">-->
+                                            <h5 class="card-title">{{i.title}}</h5>
+                                            <input type="hidden" value="{{i.title}}" name="searchmovie">
+                                        </div>
+                                    </div>
+<!--                                </div>-->
+<!--                            </div>-->
+                                </form>
 							{% endfor %}
 						</div>
                     {% endif %}
                 </div>
-            </div>
-        </div>
-    </div>
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
 </section>
  {% endblock content %}

@@ -2,17 +2,15 @@
 {% block title %}Login{% endblock title %}
 {% block css %}
 body{
-    background: -webkit-linear-gradient(left, #3931af, #00c6ff);
+    background: -webkit-linear-gradient(left, #8d021f, #00c6ff);
 }
-.form-control input{
-width : 50px;
-}
+
 {% endblock css %}
 {% block content %}
 <br>
 <br>
 <center>
-<div class="container p-5 mb-5">
+<div class="container ">
     <form method="post">{% csrf_token %}
         {% if form.non_field_errors %}
             {% for error in form.non_field_errors %}

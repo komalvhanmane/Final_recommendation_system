@@ -2,8 +2,7 @@
 {% block title %}Dashboard{% endblock title %}
 {% block css %}
          body{
-                background: -webkit-linear-gradient(left, #3931af, #00c6ff);
-                font-family: Times New Roman;
+                background: -webkit-linear-gradient(left, #8d021f, #00c6ff);
          }
          body .no-padding{
            padding-left: 0,
@@ -15,6 +14,7 @@
          h3{
            font-family:Times new roman;
          }
+
 {% endblock %}
 {% block content %}
 <br>
@@ -24,8 +24,14 @@
         <div class="autocomplete" style="width: 300px;">
             <table>
                 <tr>
+                     {{search}}
+                    {% if search %}
+                    <td><input id="" type="text"
+                               placeholder="Search Movie" name="searchmovie" value="{{parama}}" required></td>
+                    {% else %}
                     <td><input id="myInput" type="text"
                                placeholder="Search Movie" name="searchmovie" required></td>
+                    {% endif %}
                     <td><input type="submit" value="search"></td>
                 </tr>
             </table>
@@ -36,46 +42,43 @@
 <br><br>
  {% if recommended %}
 <section class="container" >
-	<div class="container px-4">
-		<div class="row gx-5">
-			<div class="col">
-				<div class="p-3 border bg-light">
 
-				<h3> Searched Movie </h3>
+			<div class="col">
+				<center><h3> Searched Movie </h3></center>
 					<div class="container">
-                        <center>
-                        <div class="col">
-                            <div class="p-3 border bg-light">
-                                <div class="card" style="width: 18rem;">
-<!--                                    using api of tmd and fetching movie posters-->
-<img class="card-img-top" src="https://image.tmdb.org/t/p/w500/{{recommended.0.image}}" alt="Card image cap" height="300px" width="200px">
-                                    <div class="card-body">
-                                        <h5 class="card-title"> Movie Name :: {{recommended.0.title}}</h5>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                            </center>
+                            <div class="card rounded mb-3" >
+  <div class="row g-0" style="background-image: url('https://mdbootstrap.com/img/Photos/Others/images/76.jpg');">
+    <div class="col-md-4">
+        <input type="image" src="https://image.tmdb.org/t/p/w500/{{recommended.0.image}}" alt="{{ 0.title }}" width="400" height="400" class="card-img-top">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+          <br>
+          <br>
+        <h1 class="card-title">Movie Name :: {{recommended.0.title}}</h1>
+          <p>Genres :: {{recommended.0.genres}}</p>
+          <p>Cast :: {{recommended.0.cast}}</p>
+      </div>
+    </div>
+  </div>
+</div>
                         <center> <h3> Recommended Movies </h3></center>
-						<div class="row row-cols-2 row-cols-lg-3 g-2 g-lg">
+                        <div class="row row-cols-1 row-cols-lg-3 g-2 g-lg">
 						{% for i in recommended|slice:"1:" %}
-                            <div class="col">
-                                <div class="p-3 border bg-light">
-                                    <div class="card" style="width: 18rem;">
-<img class="card-img-top" src="https://image.tmdb.org/t/p/w500/{{i.image}}"  alt="Card image cap" height="300px" width="200px">
+                            <form method="post"> {% csrf_token %}
+                                    <div class="card rounded" style="width: 18rem;">
+                                        <input type="image" src="https://image.tmdb.org/t/p/w500/{{i.image}}" alt="{{ i.title }}" width="40" height="400" class="card-img-top">
                                         <div class="card-body">
-                                            <h5 class="card-title"> Movie Name :: {{i.title}}</h5>
+                                            <h5 class="card-title">{{i.title}}</h5>
+                                            <p class="card-title">{{i.genres}}</p>
+                                            <input type="hidden" value="{{i.title}}" name="searchmovie">
                                         </div>
                                     </div>
-                                </div>
-                            </div>
+                                </form>
                             {% endfor %}
 						</div>
 					</div>
-				</div>
 			</div>
-		</div>
-	</div>
 </section>
 {% endif %}
 <script>

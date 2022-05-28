@@ -59,8 +59,13 @@ input[type=submit] {
 .card:hover {
   transform: scale(1.2); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
 }
+
+h3{
+color:white;
+}
+
 </style>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
     <a class="navbar-brand" href="{% url 'index' %}">Movie Recommender </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,7 +74,7 @@ input[type=submit] {
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Home</a>
+          <a class="nav-link active" aria-current="page" href="{% url 'index' %}" >Home</a>
         </li>
         {% if request.user.is_authenticated %}
         <li class="nav-item">
@@ -87,7 +92,7 @@ input[type=submit] {
         {% endif %}
         {% if not request.user.is_authenticated%}
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'login' %}">Login</a>
+          <a class="nav-link active " aria-current="page" href="{% url 'login' %}">Login</a>
         </li>
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="{% url 'signup' %}">Sign Up</a>

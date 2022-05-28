@@ -3,6 +3,7 @@ import requests
 import pandas as pd
 from django.http import HttpResponseRedirect, HttpResponse
 from sklearn.feature_extraction.text import CountVectorizer
+from django.contrib.auth.decorators import login_required
 from sklearn.metrics.pairwise import cosine_similarity
 from django.contrib.auth import logout, authenticate, login
 from django.contrib import messages
@@ -88,6 +89,13 @@ def trainData(request):
 # home page
 
 def index(request):
+    if request.method == "POST":
+        if request.user.is_authenticated:
+            print("you are allowed")
+            # return HttpResponseRedirect("/dashboard/")
+        else:
+            return HttpResponseRedirect("/login/")
+
     params1 = {"popular": newParam}
     return render(request, 'recommenderapp/index.html', params1)
 
@@ -104,9 +112,10 @@ def generateRecommendation(request, movie1):
         movieindex = new_dataframe[new_dataframe['title'] == movie1].index[0]
         print(movieindex)
         distances = similarity_matrix[movieindex]
-        movie_list = sorted(list(enumerate(distances)), reverse=True, key=lambda x: x[1])[0:6]
+        movie_list = sorted(list(enumerate(distances)), reverse=True, key=lambda x: x[1])[0:7]
         for i in movie_list:
-            movie_list1.append({"title": new_dataframe.iloc[i[0]].title, "id": new_dataframe.iloc[i[0]].movie_id})
+            movie_list1.append({"title": new_dataframe.iloc[i[0]].title, "id": new_dataframe.iloc[i[0]].movie_id,
+                                "genres": new_dataframe.iloc[i[0]].genres, "cast": new_dataframe.iloc[i[0]].cast})
     return movie_list1
 
 
@@ -151,6 +160,7 @@ def user_login(request):
         print("exception in login")
 
 
+@login_required
 def dashboard(request):
     newParam = []
     if request.method == 'POST':
@@ -165,13 +175,14 @@ def dashboard(request):
             temp["id"] = x.get("id")
             temp["image"] = fetch_image_url(x.get("id"))
             temp["title"] = x.get("title")
+            temp["genres"] = x.get("genres")
+            temp["cast"] = x.get("cast")
             newParam.append(temp)
     movies = []
     global new_dataframe
     for i in range(len(new_dataframe)):
         movies.append(new_dataframe["title"][i])
     params1 = {"movie": movies, "recommended": newParam}
-
     return render(request, 'recommenderapp/dashboard.html', params1)
 
 
@@ -182,6 +193,7 @@ def user_logout(request):
         return HttpResponseRedirect('/home/')
 
 
+@login_required
 def profile(request):
     if request.user.is_authenticated:
         user = request.user.id
@@ -189,7 +201,12 @@ def profile(request):
 
 
 # retreiving history from history table of database
+@login_required
 def history(request):
+    if request.method == "POST":
+        History.objects.filter(user=request.user).delete()
+        # entries.delete()
+
     history1 = History.objects.all()
     history2 = []
     for i in history1:
